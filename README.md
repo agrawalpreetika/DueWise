@@ -21,7 +21,9 @@
   <img src="screenshots/analytics_light.jpeg" width="28%" alt="Analytics - Light Theme" />
   <img src="screenshots/analytics_dark.jpeg" width="28%" alt="Analytics - Dark Theme" />
   <img src="screenshots/calender.jpeg" width="28%" alt="Calendar" />
+  <img src="screenshots/history.jpeg" width="28%" alt="Payment History" />
   <img src="screenshots/profile.jpeg" width="28%" alt="Payment History" />
+  
   
 </p>
 
