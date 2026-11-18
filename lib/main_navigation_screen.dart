@@ -9,6 +9,9 @@ import 'features/subscriptions/subscription_provider.dart';
 import 'features/auth/auth_provider.dart';
 import 'services/notification_service.dart'; // Notification service import added
 
+import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 import 'theme/theme_toggle_button.dart';
 
 class MainNavigationScreen extends ConsumerStatefulWidget {
@@ -126,6 +129,54 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
                       'Check your terminal/debug console for pending notifications!',
                     ),
                     duration: Duration(seconds: 2),
+                  ),
+                );
+              },
+            ),
+            // ----------------------------------------------------
+
+            // --- 2-MINUTE TEST NOTIFICATION OPTION (NEW) ---
+            ListTile(
+              leading: const Icon(
+                Icons.timer_outlined,
+                color: Colors.orangeAccent,
+              ),
+              title: const Text('Test 2-Min Notification'),
+              subtitle: const Text('Triggers a reminder after 2 minutes'),
+              onTap: () async {
+                Navigator.of(context).pop(); // Close drawer first
+
+                // 2 minute baad ka time set karein
+                final testTime = DateTime.now().add(const Duration(minutes: 2));
+
+                await NotificationService().flutterLocalNotificationsPlugin
+                    .zonedSchedule(
+                      777, // Unique Test ID
+                      '⏰ 2-Minute Test Reminder',
+                      'Aapka ye test notification successfully trigger ho gaya hai!',
+                      tz.TZDateTime.from(testTime, tz.local),
+                      const NotificationDetails(
+                        android: AndroidNotificationDetails(
+                          'duewise_test_channel',
+                          'Test Notifications',
+                          importance: Importance.max,
+                          priority: Priority.high,
+                        ),
+                      ),
+                      androidScheduleMode:
+                          AndroidScheduleMode.exactAllowWhileIdle,
+                      uiLocalNotificationDateInterpretation:
+                          UILocalNotificationDateInterpretation.absoluteTime,
+                      payload: testTime.toString(),
+                    );
+
+                // SnackBar confirmation
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Test notification scheduled! Lock your screen and wait 2 mins.',
+                    ),
+                    duration: Duration(seconds: 3),
                   ),
                 );
               },

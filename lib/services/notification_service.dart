@@ -56,7 +56,7 @@ class NotificationService {
     print('--- PENDING NOTIFICATIONS (${pendingNotifications.length}) ---');
     for (var notification in pendingNotifications) {
       print(
-        'ID: ${notification.id} | Title: ${notification.title} | Body: ${notification.body}',
+        'ID: ${notification.id} | Title: ${notification.title} | Scheduled Time: ${notification.payload ?? "No Payload"} | Body: ${notification.body}',
       );
     }
   }
@@ -142,6 +142,7 @@ class NotificationService {
           androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
           uiLocalNotificationDateInterpretation:
               UILocalNotificationDateInterpretation.absoluteTime,
+          payload: scheduledTime.toString(),
         );
       }
     }
@@ -242,5 +243,37 @@ class NotificationService {
       'Your background and scheduled reminders are fully configured.',
       details,
     );
+  }
+
+  // Schedule a test notification for 2 minutes later
+  Future<void> scheduleInstantTestNotification() async {
+    // Current time se sirf 2 minute baad ka time set karein
+    final testTime = DateTime.now().add(const Duration(minutes: 2));
+
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+          'duewise_test_channel',
+          'Test Notifications',
+          channelDescription: 'Testing background notification delivery',
+          importance: Importance.max,
+          priority: Priority.high,
+        );
+
+    const NotificationDetails details = NotificationDetails(
+      android: androidDetails,
+    );
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      888, // Unique Test ID
+      '⏰ 2-Minute Test Reminder',
+      'Aapka ye test notification successfully trigger ho gaya hai!',
+      tz.TZDateTime.from(testTime, tz.local),
+      details,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
+
+    print("Test notification scheduled for: $testTime");
   }
 }
